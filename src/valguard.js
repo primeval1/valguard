@@ -26,7 +26,7 @@
      * @param string
      * @return {boolean}
      */
-    valguard.has.symbol = function (string) {
+    valguard.has.specialSymbol = function (string) {
         return /(?=.*[@#$%])/.test(string);
     };
     /**
@@ -37,7 +37,12 @@
         return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(string);
     };
 
-
+    /**
+     *
+     * @param value
+     * @param min
+     * @return {boolean}
+     */
     valguard.is['>='] = function (value, min) {
         if(typeof value === 'string'){
             return value.length >= min;
@@ -46,6 +51,12 @@
         }
 
     };
+    /**
+     *
+     * @param value
+     * @param max
+     * @return {boolean}
+     */
     valguard.is['<='] = function (value, max) {
         if(typeof value === 'string'){
             return value.length <= max;
@@ -53,6 +64,12 @@
             return value <=  max;
         }
     };
+    /**
+     *
+     * @param value
+     * @param num
+     * @return {boolean}
+     */
     valguard.is['>'] = function (value,num) {
         if(typeof value === 'string'){
             return value.length > num;
@@ -61,7 +78,12 @@
         }
 
     };
-
+    /**
+     *
+     * @param value
+     * @param num
+     * @return {boolean}
+     */
     valguard.is['<'] = function (value,num) {
         if (typeof value === 'string') {
             return value.length < num;
@@ -69,6 +91,12 @@
             return value < num;
         }
     };
+    /**
+     *
+     * @param value
+     * @param num
+     * @return {boolean}
+     */
     valguard.is['='] = function (value,num) {
         if (typeof value === 'string') {
             return value.length < num;
@@ -76,9 +104,6 @@
             return value < num;
         }
     };
-
-
-
 
     /**
      * @desc options.banned contains the not allowed domains. Details: isEmail, isNotBanned
@@ -94,6 +119,10 @@
             return {result: isEmail && isNotBanned, details: {email: isEmail, NotBanned: isNotBanned}}
         };
     };
+    /**
+     * @param options
+     * @return {Function}
+     */
     valguard.make.validation = function (options) {
         return function (password) {
             let obj = {};
@@ -120,23 +149,4 @@
     global.Valguard = valguard;
 })(typeof window === 'undefined' ? global : window);
 
-let emailVal = Valguard.make.email({
-    banned: ['yahoo.com']
-});
-let passVal = Valguard.make.validation({
-    have: ['symbol', 'uppercase', 'lowercase'],
-    is: {'>=':4},
-});
-console.log(
-    emailVal('sdjd@gmail.com'),
-    emailVal('sdjd@yahoo.com'),
-    emailVal('sss'),
-    passVal('phw'),
-    passVal('asdf!@#$%'),
-    passVal('A!@#$%'),
-    passVal('12345678910aB@'),
-    passVal('12345aA@'),
-);
 
-console.log(Valguard.is['>=']('phwH',1));
-console.log(Valguard.has.lowercase('sssHDD'));
