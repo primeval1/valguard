@@ -15,7 +15,6 @@
         return /(?=.*[A-Z])/.test(string);
     };
     /**
-     *
      * @param string
      * @return {boolean}
      */
@@ -27,7 +26,10 @@
      * @return {boolean}
      */
     valguard.has.specialSymbol = function (string) {
-        return /(?=.*[@#$%])/.test(string);
+        return /(?=.*[@#$!&%])/.test(string);
+    };
+    valguard.has.numbers = function (string) {
+        return /(?=.*[0-9])/.test(string);
     };
     /**
      * @param string
@@ -38,7 +40,6 @@
     };
 
     /**
-     *
      * @param value
      * @param min
      * @return {boolean}
@@ -52,7 +53,6 @@
 
     };
     /**
-     *
      * @param value
      * @param max
      * @return {boolean}
@@ -65,7 +65,6 @@
         }
     };
     /**
-     *
      * @param value
      * @param num
      * @return {boolean}
@@ -79,7 +78,6 @@
 
     };
     /**
-     *
      * @param value
      * @param num
      * @return {boolean}
@@ -92,7 +90,6 @@
         }
     };
     /**
-     *
      * @param value
      * @param num
      * @return {boolean}
@@ -146,6 +143,7 @@
             return {result: !res.includes(false), details: obj}
         }
     };
+
     global.Valguard = valguard;
 })(typeof window === 'undefined' ? global : window);
 

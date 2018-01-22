@@ -5,7 +5,7 @@ let emailVal = Valguard.make.email({
     banned: ['yahoo.com']
 });
 let passVal = Valguard.make.validation({
-    have: ['specialSymbol', 'uppercase', 'lowercase'],
+    have: ['specialSymbol', 'uppercase', 'lowercase','numbers'],
     is: {'>=':4},
 });
 console.log(
@@ -19,5 +19,6 @@ console.log(
     passVal('12345aA@'),
 );
 
+console.log(Valguard.has.numbers('wewdkfkjd'));
 console.log(Valguard.is['>=']('phwH',1));
 console.log(Valguard.has.lowercase('sssHDD'));
