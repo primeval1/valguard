@@ -1,6 +1,5 @@
 (function (global) {
-    let valguard = function () {
-
+    let valguard = function (object) {
     };
 
     valguard.make = {};
@@ -20,13 +19,13 @@
      */
     valguard.has.lowercase = function (string) {
         return /(?=.*[a-z])/.test(string);
-    };
+    }
     /**
      * @param string
      * @return {boolean}
      */
-    valguard.has.specialSymbol = function (string) {
-        return /(?=.*[@#$!&%])/.test(string);
+    valguard.has.specialSymbols = function (string) {
+        return /(?=.*[@#$!&*()+=?<>.;:~`|/{},?])/.test(string);
     };
     valguard.has.numbers = function (string) {
         return /(?=.*[0-9])/.test(string);
@@ -45,9 +44,9 @@
      * @return {boolean}
      */
     valguard.is['>='] = function (value, min) {
-        if(typeof value === 'string'){
+        if (typeof value === 'string') {
             return value.length >= min;
-        }else{
+        } else {
             return value >= min;
         }
 
@@ -58,10 +57,10 @@
      * @return {boolean}
      */
     valguard.is['<='] = function (value, max) {
-        if(typeof value === 'string'){
+        if (typeof value === 'string') {
             return value.length <= max;
-        }else{
-            return value <=  max;
+        } else {
+            return value <= max;
         }
     };
     /**
@@ -69,10 +68,10 @@
      * @param num
      * @return {boolean}
      */
-    valguard.is['>'] = function (value,num) {
-        if(typeof value === 'string'){
+    valguard.is['>'] = function (value, num) {
+        if (typeof value === 'string') {
             return value.length > num;
-        }else{
+        } else {
             return value > min;
         }
 
@@ -82,7 +81,7 @@
      * @param num
      * @return {boolean}
      */
-    valguard.is['<'] = function (value,num) {
+    valguard.is['<'] = function (value, num) {
         if (typeof value === 'string') {
             return value.length < num;
         } else {
@@ -94,14 +93,13 @@
      * @param num
      * @return {boolean}
      */
-    valguard.is['='] = function (value,num) {
+    valguard.is['='] = function (value, num) {
         if (typeof value === 'string') {
             return value.length < num;
         } else {
             return value < num;
         }
     };
-
     /**
      * @desc options.banned contains the not allowed domains. Details: isEmail, isNotBanned
      * @param options
@@ -131,12 +129,21 @@
                     return temp;
                 }));
             }
-            if (options.is){
-                for (is in options.is){
-                    if(options.is.hasOwnProperty(is)){
+            if (options.is) {
+                for (is in options.is) {
+                    if (options.is.hasOwnProperty(is)) {
                         let temp = valguard.is[is](password, options.is[is]);
                         res.push(temp);
                         obj[is] = temp;
+                    }
+                }
+            }
+            if (options.custom) {
+                for (key in options.custom) {
+                    if (options.custom.hasOwnProperty(key)) {
+                        let temp = options.custom[key](password);
+                        res.push(temp);
+                        obj[key] = temp;
                     }
                 }
             }
