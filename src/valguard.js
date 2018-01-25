@@ -2,6 +2,8 @@
     let valguard = function (object) {
     };
 
+    let regexEscape = (s) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
     valguard.make = {};
     valguard.has = {};
     valguard.is = {};
@@ -100,7 +102,17 @@
             return value < num;
         }
     };
-    valguard.is.emailDomain = function (string ,domains) {
+    valguard.is.chars = function (s,chars) {
+        let rgx = new RegExp('(?=.*['+regexEscape(chars)+'])');
+        return rgx.test(s)
+    };
+    /**
+     *
+     * @param string
+     * @param domains
+     * @return {boolean}
+     */
+    valguard.is.emailDomain = function (string, domains) {
         return domains.includes(string.split('@').pop())
     };
     /**
@@ -112,7 +124,7 @@
         return function (email) {
             let banned = options.banned || null;
             let isEmail = valguard.has.email(email);
-            let isNotBanned = banned ? valguard.is.emailDomain(email,banned) : true;
+            let isNotBanned = banned ? !valguard.is.emailDomain(email, banned) : true;
             return {result: isEmail && isNotBanned, details: {email: isEmail, NotBanned: isNotBanned}}
         };
     };
@@ -121,20 +133,33 @@
      * @return {Function}
      */
     valguard.make.validation = function (options) {
-        return function (password) {
+        return function (string) {
             let obj = {};
             let res = [];
             if (options.have) {
-                res.concat(options.have.map(check => {
-                    let temp = valguard.has[check](password);
+                options.have.forEach(check => {
+                    let temp;
+                    if (check.startsWith('!')) {
+                        let tempcheck = check.substring(1);
+                        temp = !valguard.has[tempcheck](string);
+                    } else {
+                        temp = valguard.has[check](string);
+                    }
                     obj[check] = temp;
-                    return temp;
-                }));
+                    res.push(temp)
+
+                });
             }
             if (options.is) {
                 for (is in options.is) {
                     if (options.is.hasOwnProperty(is)) {
-                        let temp = valguard.is[is](password, options.is[is]);
+                        let temp ;
+                        if (is.startsWith('!')) {
+                            let tempis = is.substring(1);
+                            temp = !valguard.is[tempis](string, options.is[is]);
+                        } else {
+                            temp = valguard.is[is](string, options.is[is]);
+                        }
                         res.push(temp);
                         obj[is] = temp;
                     }
@@ -143,12 +168,13 @@
             if (options.custom) {
                 for (key in options.custom) {
                     if (options.custom.hasOwnProperty(key)) {
-                        let temp = options.custom[key](password);
+                        let temp = options.custom[key](string);
                         res.push(temp);
                         obj[key] = temp;
                     }
                 }
             }
+            console.log(res);
             return {result: !res.includes(false), details: obj}
         }
     };
