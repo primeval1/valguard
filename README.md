@@ -1,11 +1,9 @@
 # Valguard
-a small js library for validating inputs.
+A small JS library for validating inputs.
 
-## regarding this repo:
+## Regarding this repo:
 
-if you somehow came across this, please note this is a very simple library for validating, made purely for fun and mostly 
-for exercise.
+If you somehow came across this, please note this is a very simple library for validating, made purely for fun and mostly for exercise.
 
-There are *tones* of javascript libraries out there that does the same thing and many more.
-
+There are *tons* of Javascript libraries out there that do the same thing and many more.
  
